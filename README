@@ -1,0 +1,6 @@
+Bundles the following Rack middlewares:
+
+Rackables::CacheControl
+Rackables::DefaultCharset
+Rackables::PublicExceptionPage
+Rackables::TrailingSlashRedirect
