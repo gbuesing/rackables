@@ -1,4 +1,8 @@
 module Rackables
+  # Adds the specified charset to the Content-Type header, if one isn't
+  # already there.
+  #
+  # Ideal for use with Sinatra, which by default doesn't set charset
   class DefaultCharset
     HAS_CHARSET = /charset=/
 

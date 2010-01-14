@@ -21,7 +21,7 @@ module Rackables
   # A false/nil return from block will not return a response; control will continue down the
   # Rack stack:
   #
-  #   use Rackables::Get, '/api_key' do |env|
+  #   use Rackables::Get, '/api_key' do |env, response|
   #     '12345' if env['myapp.user'].authorized?
   #   end
   class Get

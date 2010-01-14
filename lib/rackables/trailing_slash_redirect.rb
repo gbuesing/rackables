@@ -1,4 +1,7 @@
 module Rackables
+  # Request paths with a trailing slash are 301 redirected to the version without, e.g.:
+  #
+  #   GET /foo/   # => 301 redirects to /foo
   class TrailingSlashRedirect
     HAS_TRAILING_SLASH = %r{^/(.*)/$}
 
