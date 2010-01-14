@@ -12,12 +12,13 @@ module Rackables
     end
 
     def call(env)
-      status, headers, body = @app.call(env)
+      response = @app.call(env)
+      headers = response[1]
       content_type = headers['Content-Type']
       if content_type && content_type !~ HAS_CHARSET
         headers['Content-Type'] = "#{content_type}; charset=#{@value}"
       end
-      [status, headers, body]
+      response
     end
   end
 end
