@@ -1,8 +1,8 @@
 = Rackables
 
-== Middleware
+A collection of useful Rack middleware, and more
 
-Rackables bundles the following Rack middlewares:
+== Middleware
 
 * Rackables::Branch - Conditionally re-routes the Rack stack at runtime to an alternate endpoint
 * Rackables::CacheControl - Sets response Cache-Control header
