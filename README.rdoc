@@ -20,6 +20,14 @@ Rackables also bundles a Rack environment inquirer similar to Rails.env:
 
 == Use
 
+Rackables is hosted as a gem on Gemcutter, so you just need to:
+
+  sudo gem install rackables
+  
+or if you wish to bundle with an app that uses Bundler, you just need to add this to your Gemfile:
+
+  gem "rackables"
+
 Requiring 'rackables' will add autoloads for all Rackables middlewares. To use the Rack.env inquirer, 
 you must explicitly require "rackables/more/env_inquirer".
 
