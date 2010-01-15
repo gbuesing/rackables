@@ -13,8 +13,8 @@ Rackables bundles the following Rack middlewares:
 
 Rackables also bundles a Rack environment inquirer similar to Rails.env:
 	
-	Rack.env                # => "development"
-	Rack.env.development?   # => true
+  Rack.env                # => "development"
+  Rack.env.development?   # => true
 
 === Use
 
@@ -23,26 +23,26 @@ you must explicitly require "rackables/more/env_inquirer".
 
 Example config.ru:
 
-	require 'rackables'
-	require 'rackables/more/env_inquirer'
-	require 'my_endpont_app'
+  require 'rackables'
+  require 'rackables/more/env_inquirer'
+  require 'my_endpont_app'
 
-	if Rack.env.development?
-		use Rack::ShowExceptions
-	else
-		use Rackables::PublicExceptionPage, 'public/500.html'
-	end
-	
-	use Rackables::TrailingSlashRedirect
-	use Rackables::CacheControl, :public, :max_age => 60
-	use Rackables::DefaultCharset, 'utf-8'
+  if Rack.env.development?
+    use Rack::ShowExceptions
+  else
+    use Rackables::PublicExceptionPage, 'public/500.html'
+  end
 
-	use Rackables::Get, '/ping_monitor' do
-		"pong"
-	end
-	
-	use Rackables::Branch do |env|
+  use Rackables::TrailingSlashRedirect
+  use Rackables::CacheControl, :public, :max_age => 60
+  use Rackables::DefaultCharset, 'utf-8'
+
+  use Rackables::Get, '/ping_monitor' do
+    "pong"
+  end
+
+  use Rackables::Branch do |env|
     Rack::Lobster if env["PATH_INFO"] =~ /^\/lobster$/
   end
 
-	run MyEndpointApp
+  run MyEndpointApp
