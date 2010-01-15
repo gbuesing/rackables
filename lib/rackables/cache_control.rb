@@ -1,22 +1,65 @@
 module Rackables
   class CacheControl
-    # Works well with Varnish
-    # TODO: accomodate more options than just public, max-age=
-    def initialize(app, value, opts)
+    # Lets you set the Cache-Control response header from middleware. Does not overwrite
+    # existing Cache-Control response header, if it already has been set.
+    #
+    # Examples:
+    #
+    #   use Rackables::CacheControl, :public, :max_age => 5
+    #     # => Cache-Control: public, max-age=5
+    #
+    #   use Rackables::CacheControl, :private, :must_revalidate, :community => "UCI"
+    #     # => Cache-Control: private, must-revalidate, community="UCI"
+    #
+    # Values specified as a Proc will be called at runtime for each request:
+    #
+    #   use Rackables::CacheControl, :public, :max_age => Proc.new { rand(6) + 3 }
+    def initialize(app, *directives)
       @app = app
-      @value = value
-      @opts = opts
+      @hash = extract_hash!(directives)
+      @directives = directives
+      extract_non_callable_values_from_hash!
+      stringify_hash_keys!
+      stringify_directives!
     end
 
     def call(env)
       response = @app.call(env)
       headers = response[1]
-      if headers['Cache-Control'].nil?
-        max_age = @opts[:max_age]
-        max_age = max_age.call if max_age.respond_to?(:call)
-        headers['Cache-Control'] = "#{@value}, max-age=#{max_age}"
+      unless headers.has_key?('Cache-Control')
+        value = @hash.empty? ? @directives : "#{@directives}, #{stringify_hash}"
+        headers['Cache-Control'] = value
       end
       response
     end
+    
+    private
+      def extract_hash!(array)
+        array.last.kind_of?(Hash) ? array.pop : {}
+      end
+      
+      def extract_non_callable_values_from_hash!
+        @hash.reject! { |k,v| v == false }
+        @hash.reject! { |k,v| @directives << k if v == true }
+        @hash.reject! { |k,v| @directives << "#{k}=#{v.inspect}" if !v.respond_to?(:call) }
+      end
+      
+      def stringify_hash_keys!
+        @hash.each do |key, value|
+          @hash[stringify_directive(key)] = @hash.delete(key)
+        end
+      end
+      
+      def stringify_directives!
+        @directives = @directives.map {|d| stringify_directive(d)}.join(', ')
+      end
+      
+      def stringify_hash
+        @hash.inject([]) {|arr, (k, v)| arr << "#{k}=#{v.call.inspect}"}.join(', ')
+      end
+      
+      def stringify_directive(directive)
+        directive.to_s.tr('_','-')
+      end
   end
 end
