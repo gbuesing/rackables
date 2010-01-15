@@ -27,8 +27,7 @@ module Rackables
       response = @app.call(env)
       headers = response[1]
       unless headers.has_key?('Cache-Control')
-        value = @hash.empty? ? @directives : "#{@directives}, #{stringify_hash}"
-        headers['Cache-Control'] = value
+        headers['Cache-Control'] = directives
       end
       response
     end
@@ -54,12 +53,12 @@ module Rackables
         @directives = @directives.map {|d| stringify_directive(d)}.join(', ')
       end
       
-      def stringify_hash
-        @hash.inject([]) {|arr, (k, v)| arr << "#{k}=#{v.call.inspect}"}.join(', ')
-      end
-      
       def stringify_directive(directive)
         directive.to_s.tr('_','-')
+      end
+      
+      def directives
+        @hash.inject(@directives) {|str, (k, v)| "#{str}, #{k}=#{v.call.inspect}"}
       end
   end
 end
