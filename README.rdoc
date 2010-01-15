@@ -1,0 +1,48 @@
+= Rackables
+
+Rackables bundles the following Rack middlewares:
+
+* Rackables::Branch - Conditionally re-route the Rack stack at runtime to an alternate endpoint
+* Rackables::CacheControl - Sets response Cache-Control header
+* Rackables::DefaultCharset - Sets charset directive in Content-Type header
+* Rackables::Get - Allows creation of simple endpoints and path routing with a syntax similar to Sinatra's get method
+* Rackables::PublicExceptionPage - Rescues exceptions with a static exception page
+* Rackables::TrailingSlashRedirect - 301 Redirects requests paths with a trailing slash
+
+=== Rackables More 
+
+Rackables also bundles a Rack environment inquirer similar to Rails.env:
+	
+	Rack.env                # => "development"
+	Rack.env.development?   # => true
+
+=== Use
+
+Requiring 'rackables' will add autoloads for all Rackables middlewares. To use the Rack.env inquirer, 
+you must explicitly require "rackables/more/env_inquirer".
+
+Example config.ru:
+
+	require 'rackables'
+	require 'rackables/more/env_inquirer'
+	require 'my_endpont_app'
+
+	if Rack.env.development?
+		use Rack::ShowExceptions
+	else
+		use Rackables::PublicExceptionPage, 'public/500.html'
+	end
+	
+	use Rackables::TrailingSlashRedirect
+	use Rackables::CacheControl, :public, :max_age => 60
+	use Rackables::DefaultCharset, 'utf-8'
+
+	use Rackables::Get, '/ping_monitor' do
+		"pong"
+	end
+	
+	use Rackables::Branch do |env|
+    Rack::Lobster if env["PATH_INFO"] =~ /^\/lobster$/
+  end
+
+	run MyEndpointApp
