@@ -25,10 +25,11 @@ module Rackables
 
     def call(env)
       response = @app.call(env)
-      headers = response[1]
+      headers = ::Rack::Utils::HeaderHash.new(response[1])
       unless headers.has_key?('Cache-Control')
         headers['Cache-Control'] = directives
       end
+      response[1] = headers
       response
     end
     
