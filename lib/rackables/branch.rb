@@ -25,6 +25,17 @@ module Rackables
   #   end
   #
   #   run MyEndpointApp
+  #
+  # If the app returned from the block responds with an X-Cascade: pass header,
+  # control will be passed back to the main rack pipeline.
+  #
+  # In this contrived example, MyEndpointApp will always be called:
+  #
+  #   use Rackables::Branch do |env|
+  #     Proc.new { [404, 'X-Cascade' => 'pass', []] }
+  #   end
+  #
+  #   run MyEndpointApp
   class Branch
     def initialize(app, &block)
       @app = app
@@ -32,8 +43,13 @@ module Rackables
     end
 
     def call(env)
-      app = @block.call(env) || @app
-      app.call(env)
+      if app = @block.call(env)
+        response = app.call(env)
+        cascade = response[1]['X-Cascade']
+        cascade == 'pass' ? @app.call(env) : response
+      else
+        @app.call(env)
+      end
     end
   end
 end

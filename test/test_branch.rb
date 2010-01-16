@@ -22,5 +22,15 @@ class TestBranch < Test::Unit::TestCase
     status, headers, body = middleware.call('PATH_INFO' => '/foo')
     assert_equal 'Downstream app', body[0]
   end
+  
+  def test_calls_downstream_app_when_app_returned_from_block_returns_x_cascade_header
+    app = Proc.new { [200, {}, ["Downstream app"]] }
+    blog = Proc.new { [404, {'X-Cascade' => 'pass'}, []] }
+    middleware = Rackables::Branch.new(app) do |env|
+      blog if env['PATH_INFO'] =~ /^\/blog/
+    end
+    status, headers, body = middleware.call('PATH_INFO' => '/blog')
+    assert_equal 'Downstream app', body[0]
+  end
 
 end
