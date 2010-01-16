@@ -43,8 +43,8 @@ module Rackables
     end
 
     def call(env)
-      if app = @block.call(env)
-        response = app.call(env)
+      if branch_app = @block.call(env)
+        response = branch_app.call(env)
         cascade = response[1]['X-Cascade']
         cascade == 'pass' ? @app.call(env) : response
       else
