@@ -4,7 +4,7 @@ module Rackables
   #
   # Ideal for use with Sinatra, which by default doesn't set charset
   class DefaultCharset
-    HAS_CHARSET = /charset=/
+    HAS_CHARSET = /;\s*charset\s*=\s*/i
 
     def initialize(app, value = 'utf-8')
       @app = app
