@@ -54,4 +54,11 @@ class TestCacheControl < Test::Unit::TestCase
     assert_equal 'private', headers['Cache-Control']
   end
 
+  def test_respects_existing_cache_control_header_case_insensitive
+    app = Proc.new { [200, {'Cache-control' => 'private'}, []]}
+    middleware = Rackables::CacheControl.new(app, :public, :max_age => 5)
+    status, headers, body = middleware.call({})
+    assert_equal 'private', headers['Cache-Control']
+  end
+
 end
