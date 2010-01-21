@@ -1,8 +1,8 @@
 module Rackables
-  # Allows you to tap into the response headers: Yields a Rack::Utils::HeaderHash
+  # Allows you to tap into the response headers. Yields a Rack::Utils::HeaderHash
   # of current response headers to the block. Example:
   #
-  #   Rackables::ResponseHeaders do |headers|
+  #   use Rackables::ResponseHeaders do |headers|
   #     headers['X-Foo'] = 'bar'
   #     headers.delete('X-Baz')
   #   end
