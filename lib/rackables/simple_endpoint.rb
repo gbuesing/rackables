@@ -55,20 +55,20 @@ module Rackables
         @app.call(env)
       end
     end
-    
+
     private
       def extract_path(arg)
         arg.is_a?(Hash) ? arg.keys.first : arg
       end
-      
+
       def extract_verbs(arg)
         arg.is_a?(Hash) ? [arg.values.first].flatten.map {|verb| verb.to_s.upcase} : []
       end
-      
+
       def match_path(path)
         @path.is_a?(Regexp) ? @path.match(path.to_s) : @path == path.to_s
       end
-      
+
       def valid_method?(method)
         @verbs.empty? || @verbs.include?(method)
       end

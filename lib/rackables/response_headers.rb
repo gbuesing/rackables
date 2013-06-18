@@ -14,11 +14,10 @@ module Rackables
     end
 
     def call(env)
-      response = @app.call(env)
-      headers = ::Rack::Utils::HeaderHash.new(response[1])
+      status, headers, body = @app.call(env)
+      headers = ::Rack::Utils::HeaderHash.new(headers)
       @block.call(headers)
-      response[1] = headers
-      response
+      [status, headers, body]
     end
   end
 end
