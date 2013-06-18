@@ -1,3 +1,5 @@
+require 'rack'
+
 module Rackables
   # Request paths with a trailing slash are 301 redirected to the version without, e.g.:
   #

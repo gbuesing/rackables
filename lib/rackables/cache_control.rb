@@ -1,3 +1,5 @@
+require 'rack/utils'
+
 module Rackables
   class CacheControl
     # Lets you set the Cache-Control response header from middleware. Does not overwrite

@@ -1,3 +1,5 @@
+require 'rack'
+
 module Rackables
   # Simplest example:
   #

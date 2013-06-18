@@ -1,3 +1,5 @@
+require 'rack/utils'
+
 module Rackables
   # Allows you to tap into the response headers. Yields a Rack::Utils::HeaderHash
   # of current response headers to the block. Example:

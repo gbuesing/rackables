@@ -1,3 +1,5 @@
+require 'rack/utils'
+
 module Rackables
   # Adds the specified charset to the Content-Type header, if one isn't
   # already there.

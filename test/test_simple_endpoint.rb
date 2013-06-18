@@ -1,7 +1,5 @@
 require 'test/unit'
 require 'rackables'
-require 'rubygems'
-require 'rack'
 
 class TestSimpleEndpoint < Test::Unit::TestCase
 
@@ -36,14 +34,14 @@ class TestSimpleEndpoint < Test::Unit::TestCase
     assert_equal 200, status
     assert_equal 'bar', body.body
   end
-  
+
   def test_get_returns_response_when_string_path_arg_matches_path_info_with_single_method_requirement
     middleware = Rackables::SimpleEndpoint.new(@app, '/foo' => :get) { 'bar' }
     status, headers, body = middleware.call('PATH_INFO' => '/foo', 'REQUEST_METHOD' => 'GET')
     assert_equal 200, status
     assert_equal 'bar', body.body
   end
-  
+
   def test_get_returns_response_when_string_path_arg_matches_path_info_with_multiple_method_requirements
     middleware = Rackables::SimpleEndpoint.new(@app, '/foo' => [:get, :post]) { 'bar' }
     status, headers, body = middleware.call('PATH_INFO' => '/foo', 'REQUEST_METHOD' => 'POST')
