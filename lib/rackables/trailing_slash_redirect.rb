@@ -10,10 +10,10 @@ module Rackables
     end
 
     def call(env)
-      if env['PATH_INFO'] =~ HAS_TRAILING_SLASH
-        location = "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}/#{$1}"
-        location = "#{location}?#{env['QUERY_STRING']}" if env['QUERY_STRING'].to_s =~ /\S/
-        [301, {"Location" => location}, []]
+      req = Rack::Request.new(env)
+      if req.path_info =~ HAS_TRAILING_SLASH
+        req.path_info = "/#{$1}"
+        [301, {"Location" => req.url}, []]
       else
         @app.call(env)
       end
