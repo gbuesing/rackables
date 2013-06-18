@@ -7,16 +7,3 @@ Rake::TestTask.new do |t|
 end
 task :default => :test
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "rackables"
-    gemspec.summary = "Bundle of useful Rack middleware"
-    gemspec.description = "Bundles Rack middleware: CacheControl, DefaultCharset, PublicExceptionPage, TrailingSlashRedirect"
-    gemspec.email = "gbuesing@gmail.com"
-    gemspec.homepage = "http://github.com/gbuesing/rackables"
-    gemspec.authors = ["Geoff Buesing"]
-  end
-rescue LoadError
-  puts "Jeweler not available. Install it with: gem install jeweler"
-end

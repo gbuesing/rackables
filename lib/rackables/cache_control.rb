@@ -32,32 +32,30 @@ module Rackables
       response[1] = headers
       response
     end
-    
+
     private
       def extract_hash!(array)
         array.last.kind_of?(Hash) ? array.pop : {}
       end
-      
+
       def extract_non_callable_values_from_hash!
         @hash.reject! { |k,v| v == false }
         @hash.reject! { |k,v| @directives << k if v == true }
         @hash.reject! { |k,v| @directives << "#{k}=#{v.inspect}" if !v.respond_to?(:call) }
       end
-      
+
       def stringify_hash_keys!
-        @hash.each do |key, value|
-          @hash[stringify_directive(key)] = @hash.delete(key)
-        end
+        @hash = @hash.inject({}) {|memo, (k, v)| memo[stringify_directive(k)] = v; memo}
       end
-      
+
       def stringify_directives!
         @directives = @directives.map {|d| stringify_directive(d)}.join(', ')
       end
-      
+
       def stringify_directive(directive)
         directive.to_s.tr('_','-')
       end
-      
+
       def directives
         @hash.inject(@directives) {|str, (k, v)| "#{str}, #{k}=#{v.call.inspect}"}
       end
