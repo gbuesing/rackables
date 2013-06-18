@@ -7,15 +7,15 @@ A collection of useful Rack middleware, and more
 * Rackables::Branch - Conditionally re-routes the Rack stack at runtime to an alternate endpoint
 * Rackables::CacheControl - Sets response Cache-Control header
 * Rackables::DefaultCharset - Sets charset directive in Content-Type header
-* Rackables::Get - Allows creation of simple endpoints and path routing with a syntax similar to Sinatra's get method
+* Rackables::SimpleEndpoint - Allows creation of simple endpoints and path routing with a syntax similar to Sinatra's get method
 * Rackables::HideExceptions - Rescues exceptions with a static exception page
 * Rackables::ResponseHeaders - Allows adding and removing of response headers at runtime
 * Rackables::TrailingSlashRedirect - 301 Redirects requests paths with a trailing slash
 
-== More 
+== More
 
 Rackables also bundles a Rack environment inquirer similar to Rails.env:
-	
+
   Rack.env                # => "development"
   Rack.env.development?   # => true
 
@@ -24,12 +24,12 @@ Rackables also bundles a Rack environment inquirer similar to Rails.env:
 Rackables is hosted as a gem on Gemcutter, so you just need to:
 
   sudo gem install rackables
-  
+
 or if you wish to bundle with an app that uses Bundler, you just need to add this to your Gemfile:
 
   gem "rackables"
 
-Requiring 'rackables' will add autoloads for all Rackables middlewares. To use the Rack.env inquirer, 
+Requiring 'rackables' will add autoloads for all Rackables middlewares. To use the Rack.env inquirer,
 you must explicitly require "rackables/more/env_inquirer".
 
 Example config.ru:
@@ -47,12 +47,12 @@ Example config.ru:
   use Rackables::TrailingSlashRedirect
   use Rackables::CacheControl, :public, :max_age => 60
   use Rackables::DefaultCharset, 'utf-8'
-  
+
   use Rackables::ResponseHeaders do |headers|
     headers['X-Foo'] = 'foo'
   end
 
-  use Rackables::Get, '/ping_monitor' do
+  use Rackables::SimpleEndpoint, '/ping_monitor' do
     "pong"
   end
 
